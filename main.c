@@ -75,6 +75,15 @@ int main()
     printf("grad = %.2f\n", d.grad);
     printf("op   = %c\n", d.op);
 
+    printf("%p\n", (void*)c.left);
+    printf("%p\n", (void*)&a);
+
+    printf("%p\n", (void*)d.left);
+    printf("%p\n", (void*)&c);
+
+    printf("%p\n", (void*)d.right);
+    printf("%p\n", (void*)&e);
+
     
     return 0;
 }
