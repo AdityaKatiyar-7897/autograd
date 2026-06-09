@@ -1,5 +1,15 @@
 #include <stdio.h>
 
+/* sample expression
+
+a = 2
+b = 3
+e = 4
+
+c = a * b
+d = c + e
+*/
+
 typedef struct Value {
 
     float data;
@@ -10,7 +20,86 @@ typedef struct Value {
 
     char op;
 
+    char *label;
+
 } Value;
+
+Value value_create(float data)
+{
+    Value out;
+
+    out.data = data;
+    out.grad = 0.0f;
+
+    out.left = NULL;
+    out.right = NULL;
+
+    out.op = ' ';
+    out.label = NULL;
+
+    return out;
+}
+
+void print_value(Value *v)
+{
+    printf("\n Value object  %s \n", v->label);
+
+    printf("data = %.2f\n", v->data);
+    printf("grad = %.2f\n", v->grad);
+    printf("op   = %c\n", v->op);
+
+    if (v->left != NULL)
+    {
+        printf("left  -> %s (%.2f)\n",
+               v->left->label,
+               v->left->data);
+
+        printf("addr  -> %p\n",
+               (void *)v->left);
+    }
+
+    if (v->right != NULL)
+    {
+        printf("right -> %s (%.2f)\n",
+               v->right->label,
+               v->right->data);
+
+        printf("addr  -> %p\n",
+               (void *)v->right);
+    }
+}
+
+Value value_mul(Value *a, Value *b)
+{
+    Value out;
+
+    out.data = a->data * b->data;
+    out.grad = 0.0f;
+
+    out.left = a;
+    out.right = b;
+
+    out.op = '*';
+    out.label = NULL;
+
+    return out;
+}
+
+Value value_add(Value *a, Value *b)
+{
+    Value out;
+
+    out.data = a->data + b->data;
+    out.grad = 0.0f;
+
+    out.left = a;
+    out.right = b;
+
+    out.op = '+';
+    out.label = NULL;
+
+    return out;
+}
 
 int main()
 {
@@ -20,70 +109,26 @@ int main()
     Value d;
     Value e;
 
-    a.data = 2.0f;
-    a.grad = 0.0f;
-    a.left = NULL;
-    a.right = NULL;
-    a.op = ' ';
+    a = value_create(2.0f);
+    a.label = "a";
 
-    b.data = 3.0f;
-    b.grad = 0.0f;
-    b.left = NULL;
-    b.right = NULL;
-    b.op = ' ';
+    b = value_create(3.0f);
+    b.label = "b";
 
-    e.data = 4.0f;
-    e.grad = 0.0f;
-    e.left = NULL;
-    e.right = NULL;
-    e.op = ' ';
+    e = value_create(4.0f);
+    e.label = "e";
 
-    c.data = a.data * b.data;
-    c.grad = 0.0f;
-    c.left = &a;
-    c.right = &b;
-    c.op = '*';
+    c = value_mul(&a, &b);
+    c.label = "c";
 
-    d.data = c.data + e.data;
-    d.grad = 0.0f;
-    d.left = &c;
-    d.right = &e;
-    d.op = '+';
+    d = value_add(&c, &e);
+    d.label = "d";
 
-    printf("\nValue object a\n");
-    printf("data = %.2f\n", a.data);
-    printf("grad = %.2f\n", a.grad);
-    printf("op   = %c\n", a.op);
-    
-    printf("\nValue object b\n");
-    printf("data = %.2f\n", b.data);
-    printf("grad = %.2f\n", b.grad);
-    printf("op   = %c\n", b.op);
-    
-    printf("\nValue object e\n");
-    printf("data = %.2f\n", e.data);
-    printf("grad = %.2f\n", e.grad);
-    printf("op   = %c\n", e.op);
-    
-    printf("\nValue object c\n");
-    printf("data = %.2f\n", c.data);
-    printf("grad = %.2f\n", c.grad);
-    printf("op   = %c\n", c.op);
-    
-    printf("\nValue object d\n");
-    printf("data = %.2f\n", d.data);
-    printf("grad = %.2f\n", d.grad);
-    printf("op   = %c\n", d.op);
+    print_value(&a);
+    print_value(&b);
+    print_value(&e);
+    print_value(&c);
+    print_value(&d);
 
-    printf("%p\n", (void*)c.left);
-    printf("%p\n", (void*)&a);
-
-    printf("%p\n", (void*)d.left);
-    printf("%p\n", (void*)&c);
-
-    printf("%p\n", (void*)d.right);
-    printf("%p\n", (void*)&e);
-
-    
     return 0;
 }
